@@ -18,6 +18,10 @@ export const App = (props) => {
 
     let time_pattern = value.match(/((1[0-2]|0?[1-9]):([0-5][0-9]) ?([AaPp][Mm]))/);
     let time_pattern2 = value.match(/\b((?:1[0-2]|[1-9])[ap]m)-((?:1[0-2]|[1-9])[ap]m)/);
+
+    let time_of_day = value.search("noon");
+
+    console.log('timeofday' +time_of_day)
     
     
     let word_pattern = value.match(/Tomorrow/)
@@ -38,10 +42,18 @@ export const App = (props) => {
       let new_val =  nextDate(week_pattern[0])
       const myDate = new Date(new_val)
       setDate(myDate.toISOString())
-      console.log(new_val)
+    }
+    if(time_of_day && week_pattern)
+    {
+      
+      let new_val =  nextDate(week_pattern[0])
+      const myDate = new Date(new_val)
+      let t = myDate.setHours(17);
+      let d = new Date(t);
+      setDate(d.toISOString())
     }
 
-    console.log("Time", week_pattern)
+    console.log("Time", time_pattern)
     
     let mentions = value.match(mention_pattern);
     setMentions(mentions);
@@ -129,10 +141,10 @@ var days = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 's
         <div className="App">
           <header className="App-header">
               <div className="app-wrapper">
-                <form action="">
+                <form action="" className="myForm">
                 {/* <p className="">Test Task</p> */}
 
-                 <div>
+                 <div className="form-inner">
                  <label>
                     <p className="label-txt label-active">ENTER STRING</p>
                     <input type="text" className="input" value={value} onChange={handleChange}/>
