@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import './App.css';
-
+import moment from 'moment'
 export const App = (props) => {
 
   const [value, setValue] = useState('');
@@ -21,21 +21,20 @@ export const App = (props) => {
 
     let time_of_day = value.search("noon");
 
-    console.log('timeofday' +time_of_day)
-    
     
     let word_pattern = value.match(/Tomorrow/)
     if(word_pattern)
     {
-      const today = new Date()
-      const tomorrow = new Date(today + 1)
-      var myDate =  new Date(tomorrow.setDate(tomorrow.getDate() + 1))
-      setDate(myDate.toISOString())
+      const today = moment();
+      const tomorrow = moment(today, "DD-MM-YYYY").add(1, 'days');
+      var myDate =  moment(tomorrow).toISOString()
+      setDate(myDate)
     }
     if(time_pattern)
     {
-      const myDate = new Date()
-      setDate(myDate.toISOString())
+      console.log("time pattern"+time_pattern[0])
+      // const myDate1 =  myDate.add(5, 'hours');
+      // setDate(myDate1.toISOString())
     }
     if(week_pattern)
     {
@@ -53,7 +52,6 @@ export const App = (props) => {
       setDate(d.toISOString())
     }
 
-    console.log("Time", time_pattern)
     
     let mentions = value.match(mention_pattern);
     setMentions(mentions);
@@ -92,16 +90,10 @@ export const App = (props) => {
       input = input.replace(word_pattern[0], "")
     }
 
-    // input = input.replace('at', "")
-    // input = input.replace('-', "")
-    // input = input.replace('and', "")
-    // input = input.replace('with', "")
-    // input = input.replace('Noon', "")
-    // input = input.replace(',', "")
 
     var text = input;
-    var find = ["Noon","and", 'at','with', '-', ',' ];
-    var replace = ['','', '','','',''];
+    var find = ["Noon", "morning","and", 'at','with', '-', ',' ];
+    var replace = ['','', '', '','','',''];
     input = replaceStr(text, find, replace);
 
     setText(input);
@@ -135,35 +127,31 @@ var days = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 's
     const { value } = e.target;
     setValue(value);
 }
-  // const [mentions, setMentions] = useState('');
- 
   return (
-        <div className="App">
-          <header className="App-header">
+        <div className="App h-screen w-full flex justify-center items-center bg-green-500">
+          <header className="App-header bg-white shadow-md rounded px-8 py-8 pt-8">
               <div className="app-wrapper">
-                <form action="" className="myForm">
-                {/* <p className="">Test Task</p> */}
-
+                <form action="" className="myForm w-full bg-gray-200 pt-12 pb-4 pr-5 pl-5">
                  <div className="form-inner">
-                 <label>
-                    <p className="label-txt label-active">ENTER STRING</p>
-                    <input type="text" className="input" value={value} onChange={handleChange}/>
+                 <label className="block relative m-10">
+                    <p className="label-txt text-black l-top-1 text-sm block font-bold pb-2">ENTER STRING</p>
+                    <input type="text" className="input shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline border-blue-300" value={value} onChange={handleChange}/>
                    
-                    <div className="line-box">
+                    <div className="line-box relative w-full">
                       <div className="line"></div>
                     </div>
                   </label>
-                  <button type="button" onClick={handleOK}>submit</button>
+                  <button type="button" className="inline-block pt-1 pb-1 pl-5 pr-5 bg-gray-500 hover:bg-green-500" onClick={handleOK}>submit</button>
                   {
                     (mentions && date || text) &&
-                    <div className="details">
+                    <div className="border-2 border-gray-300 block text-left p-6 m-10 text-black shadow-2xl bg-white">
                        <p className="">RESULT</p>
                       <ul>
-                        <li><strong>DateTime:</strong>{date}</li>
-                        <li><strong>Body:</strong>{text}</li>
+                        <li className="mt-5"><strong>DateTime:</strong>{date}</li>
+                        <li className="mt-5"><strong>Body:</strong>{text}</li>
                         {
                           mentions && mentions.length > 0 &&
-                          <li><strong>Mentions:</strong>[{mentions.map((mention, key) =>
+                          <li className="mt-5"><strong>Mentions:</strong>[{mentions.map((mention, key) =>
                           <span key={key}>'{mention}' {((key + 1) < mentions.length) ? ',' : ''}</span>
                           )}]</li>
                         }
